@@ -37,7 +37,7 @@ CMD jupyter notebook --ip * --no-browser
 
 ## Example
 
-Navigate to the [example](./example) directory of this project & bring up an example Jupyter notebook:
+Navigate to the [notebook](./notebook) directory of this project & bring up an example Jupyter notebook:
 
 ```bash
 docker-compose up
