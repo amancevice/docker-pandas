@@ -23,15 +23,17 @@ docker pull amancevice/pandas:0.16.2
 Use the `FROM` keyword to build an image from a base with pandas pre-installed
 
 ```Dockerfile
-FROM amancevice/pandas:0.18.1
+FROM amancevice/pandas
 
-RUN apk add --no-cache g++ && pip install notebook
+RUN apk add --no-cache g++ git libpng-dev freetype-dev
+RUN pip install notebook tornado pyzmq jinja2 matplotlib
+RUN git clone https://github.com/gdsaxton/PANDAS.git
 
 EXPOSE 8888
 
-WORKDIR /notebooks
+WORKDIR /PANDAS
 
-CMD jupyter notebook --ip * --no-browser
+CMD ["sh", "-c", "jupyter notebook --ip=0.0.0.0 --no-browser"]
 ```
 
 
