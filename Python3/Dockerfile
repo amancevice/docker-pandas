@@ -1,7 +1,7 @@
 FROM alpine
 MAINTAINER smallweirdnum@gmail.com
 
-ENV PANDAS_VERSION 0.17.0
+ENV PANDAS_VERSION 0.17.1
 RUN apk add --no-cache python3-dev && \
     apk add --no-cache --virtual .build-deps g++ && \
     ln -s /usr/include/locale.h /usr/include/xlocale.h && \
