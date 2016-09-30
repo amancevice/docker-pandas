@@ -2,32 +2,14 @@
 
 Docker image based on alpine linux with pandas installed.
 
+## `Dockerfile` Links
 
-## Python2
-
-```bash
-# Get pandas 0.18.1
-docker pull amancevice/pandas:0.18.1
-
-# Get older pandas
-docker pull amancevice/pandas:0.16.2
-```
-
-
-## Python3
-
-```bash
-# Get pandas 0.18.1
-docker pull amancevice/pandas:0.18.1-python3
-
-# Get older pandas
-docker pull amancevice/pandas:0.16.2-python3
-```
-
-
-## Dockerfile
-
-```Dockerfile
-FROM amancevice/pandas:0.18.1
-# ...
-```
+* `0.16.2`, `0.16`, `0.16.2-python2`, `0.16-python2` *([0.16/python2/Dockerfile](./0.16/python2/Dockerfile))*
+* `0.16.2-python3`, `0.16-python3` *([0.16/python3/Dockerfile](./0.16/python3/Dockerfile))*
+* `0.16.2-jupyter`, `0.16-jupyter` *([0.16/jupyter/Dockerfile](./0.16/jupyter/Dockerfile))*
+* `0.17.1`, `0.17`, `0.17.1-python2`, `0.17-python2` *([0.17/python2/Dockerfile](./0.17/python2/Dockerfile))*
+* `0.17.1-python3`, `0.17-python3` *([0.17/python3/Dockerfile](./0.17/python3/Dockerfile))*
+* `0.17.1-jupyter`, `0.17-jupyter` *([0.17/jupyter/Dockerfile](./0.17/jupyter/Dockerfile))*
+* `0.18.1`, `0.18`, `0.18.1-python2`, `0.18-python2`, `latest` *([0.18/python2/Dockerfile](./0.18/python2/Dockerfile))*
+* `0.18.1-python3`, `0.18-python3` *([0.18/python3/Dockerfile](./0.18/python3/Dockerfile))*
+* `0.18.1-jupyter`, `0.18-jupyter`, `jupyter` *([0.18/jupyter/Dockerfile](./0.18/jupyter/Dockerfile))*
