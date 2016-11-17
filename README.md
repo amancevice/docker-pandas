@@ -13,6 +13,6 @@ Docker image based on alpine linux with pandas installed.
 * `0.18.1-jupyter`, `0.18-jupyter` *([0.18/jupyter/Dockerfile](./0.18/jupyter/Dockerfile))*
 * `0.18.1-python2`, `0.18-python2`, `0.18.1`, `0.18` *([0.18/python2/Dockerfile](./0.18/python2/Dockerfile))*
 * `0.18.1-python3`, `0.18-python3` *([0.18/python3/Dockerfile](./0.18/python3/Dockerfile))*
-* `0.19.0-jupyter`, `0.19-jupyter`, `jupyter` *([0.19/jupyter/Dockerfile](./0.19/jupyter/Dockerfile))*
-* `0.19.0-python2`, `0.19-python2`, `0.19.0`, `0.19`, `latest` *([0.19/python2/Dockerfile](./0.19/python2/Dockerfile))*
-* `0.19.0-python3`, `0.19-python3` *([0.19/python3/Dockerfile](./0.19/python3/Dockerfile))*
+* `0.19.1-jupyter`, `0.19-jupyter`, `jupyter` *([0.19/jupyter/Dockerfile](./0.19/jupyter/Dockerfile))*
+* `0.19.1-python2`, `0.19-python2`, `0.19.1`, `0.19`, `latest` *([0.19/python2/Dockerfile](./0.19/python2/Dockerfile))*
+* `0.19.1-python3`, `0.19-python3` *([0.19/python3/Dockerfile](./0.19/python3/Dockerfile))*
