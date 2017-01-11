@@ -1,6 +1,6 @@
-FROM alpine:3.4
+FROM alpine:3.5
 MAINTAINER smallweirdnum@gmail.com
 
-RUN apk add --no-cache python-dev py-pip g++ && \
+RUN apk add --no-cache python2-dev py2-pip g++ && \
     ln -s /usr/include/locale.h /usr/include/xlocale.h && \
-    pip install numpy==1.11.2 cython==0.25.1
+    pip install numpy==1.11.3 cython==0.25.2
