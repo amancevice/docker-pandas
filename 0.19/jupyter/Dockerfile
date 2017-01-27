@@ -1,6 +1,12 @@
-FROM amancevice/pandas:0.19.2-python2
-RUN apk add --no-cache curl freetype-dev libpng-dev && \
-    pip install jupyter==1.0.0 matplotlib==1.5.1
+FROM python:2.7-alpine
+RUN apk add --no-cache g++ freetype-dev libpng-dev && \
+    ln -s /usr/include/locale.h /usr/include/xlocale.h && \
+    pip install \
+        cython==0.25.2 \
+        jupyter==1.0.0 \
+        matplotlib==1.5.1 \
+        numpy==1.12.0 && \
+    pip install pandas==0.19.2
 EXPOSE 8888
 WORKDIR /notebooks
 VOLUME /notebooks
