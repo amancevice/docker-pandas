@@ -1,6 +1,6 @@
 # Pandas on Alpine Linux
 
-Docker image based on alpine linux with pandas installed.
+Docker image based on alpine linux with [pandas](https://github.com/pandas-dev/pandas) installed.
 
 ## Dockerfile Links
 
