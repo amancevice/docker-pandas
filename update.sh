@@ -5,6 +5,7 @@ pandas_0_16=0.16.2
 pandas_0_17=0.17.1
 pandas_0_18=0.18.1
 pandas_0_19=0.19.2
+pandas_0_20=0.20.1
 
 # 0.16
 dir=0.16
@@ -29,3 +30,9 @@ dir=0.19
 erb pandas=$pandas_0_19 Dockerfile-jupyter.erb > $dir/jupyter/Dockerfile
 erb pandas=$pandas_0_19 Dockerfile-python2.erb > $dir/python2/Dockerfile
 erb pandas=$pandas_0_19 Dockerfile-python3.erb > $dir/python3/Dockerfile
+
+# 0.20
+dir=0.20
+erb pandas=$pandas_0_20 Dockerfile-jupyter.erb > $dir/jupyter/Dockerfile
+erb pandas=$pandas_0_20 Dockerfile-python2.erb > $dir/python2/Dockerfile
+erb pandas=$pandas_0_20 Dockerfile-python3.erb > $dir/python3/Dockerfile
