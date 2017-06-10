@@ -1,0 +1,74 @@
+version: '3'
+services:
+  jupyter:
+    build:
+      context: Jupyter
+      args:
+        PANDAS_VERSION: 0.20.2
+    image: amancevice/pandas:jupyter
+  latest:
+    build:
+      context: Python 3
+      args:
+        PANDAS_VERSION: 0.20.2
+    image: amancevice/pandas
+  pandas-0.16.2-python2:
+    build:
+      context: Python 2
+      args:
+        PANDAS_VERSION: 0.16.2
+    image: amancevice/pandas:0.16.2-python2
+  pandas-0.17.1-python2:
+    build:
+      context: Python 2
+      args:
+        PANDAS_VERSION: 0.17.1
+    image: amancevice/pandas:0.17.1-python2
+  pandas-0.18.1-python2:
+    build:
+      context: Python 2
+      args:
+        PANDAS_VERSION: 0.18.1
+    image: amancevice/pandas:0.18.1-python2
+  pandas-0.19.2-python2:
+    build:
+      context: Python 2
+      args:
+        PANDAS_VERSION: 0.19.2
+    image: amancevice/pandas:0.19.2-python2
+  pandas-0.20.2-python2:
+    build:
+      context: Python 2
+      args:
+        PANDAS_VERSION: 0.20.2
+    image: amancevice/pandas:0.20.2-python2
+  pandas-0.16.2-python3:
+    build:
+      context: Python 3
+      args:
+        PANDAS_VERSION: 0.16.2
+    image: amancevice/pandas:0.16.2-python3
+  pandas-0.17.1-python3:
+    build:
+      context: Python 3
+      args:
+        PANDAS_VERSION: 0.17.1
+    image: amancevice/pandas:0.17.1-python3
+  pandas-0.18.1-python3:
+    build:
+      context: Python 3
+      args:
+        PANDAS_VERSION: 0.18.1
+    image: amancevice/pandas:0.18.1-python3
+  pandas-0.19.2-python3:
+    build:
+      context: Python 3
+      args:
+        PANDAS_VERSION: 0.19.2
+    image: amancevice/pandas:0.19.2-python3
+  pandas-0.20.2-python3:
+    build:
+      context: Python 3
+      args:
+        PANDAS_VERSION: 0.20.2
+    image: amancevice/pandas:0.20.2-python3
