@@ -6,7 +6,7 @@ RUN apk add --no-cache g++ freetype-dev libpng-dev && \
         jupyter==1.0.0 \
         matplotlib==1.5.1 \
         numpy==1.12.0 && \
-    pip install pandas==0.20.1
+    pip install pandas==0.20.2
 EXPOSE 8888
 WORKDIR /notebooks
 VOLUME /notebooks
