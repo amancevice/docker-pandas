@@ -6,6 +6,8 @@ services:
       args:
         PANDAS_VERSION: 0.20.2
     image: amancevice/pandas:jupyter
+    ports:
+      - 8888:8888
   latest:
     build:
       context: Python 3
