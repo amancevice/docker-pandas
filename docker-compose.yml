@@ -14,6 +14,13 @@ services:
       args:
         PANDAS_VERSION: 0.20.2
     image: amancevice/pandas
+  alpine:
+    build:
+      context: Python 3
+      dockerfile: Dockerfile.alpine
+      args:
+        PANDAS_VERSION: 0.20.2
+    image: amancevice/pandas
   pandas-0.16.2-python2:
     build:
       context: Python 2
