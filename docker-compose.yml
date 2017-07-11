@@ -4,7 +4,7 @@ services:
     build:
       context: Jupyter
       args:
-        PANDAS_VERSION: 0.20.2
+        PANDAS_VERSION: 0.20.3
     image: amancevice/pandas:jupyter
     ports:
       - 8888:8888
@@ -12,14 +12,14 @@ services:
     build:
       context: Python 3
       args:
-        PANDAS_VERSION: 0.20.2
+        PANDAS_VERSION: 0.20.3
     image: amancevice/pandas
   alpine:
     build:
       context: Python 3
       dockerfile: Dockerfile.alpine
       args:
-        PANDAS_VERSION: 0.20.2
+        PANDAS_VERSION: 0.20.3
     image: amancevice/pandas
   pandas-0.16.2-python2:
     build:
@@ -125,29 +125,29 @@ services:
       args:
         PANDAS_VERSION: 0.19.2
     image: amancevice/pandas:0.19.2-python3-alpine
-  pandas-0.20.2-python2:
+  pandas-0.20.3-python2:
     build:
       context: Python 2
       args:
-        PANDAS_VERSION: 0.20.2
-    image: amancevice/pandas:0.20.2-python2
-  pandas-0.20.2-python3:
+        PANDAS_VERSION: 0.20.3
+    image: amancevice/pandas:0.20.3-python2
+  pandas-0.20.3-python3:
     build:
       context: Python 3
       args:
-        PANDAS_VERSION: 0.20.2
-    image: amancevice/pandas:0.20.2-python3
-  pandas-0.20.2-python2-alpine:
+        PANDAS_VERSION: 0.20.3
+    image: amancevice/pandas:0.20.3-python3
+  pandas-0.20.3-python2-alpine:
     build:
       context: Python 2
       dockerfile: Dockerfile.alpine
       args:
-        PANDAS_VERSION: 0.20.2
-    image: amancevice/pandas:0.20.2-python2-alpine
-  pandas-0.20.2-python3-alpine:
+        PANDAS_VERSION: 0.20.3
+    image: amancevice/pandas:0.20.3-python2-alpine
+  pandas-0.20.3-python3-alpine:
     build:
       context: Python 3
       dockerfile: Dockerfile.alpine
       args:
-        PANDAS_VERSION: 0.20.2
-    image: amancevice/pandas:0.20.2-python3-alpine
+        PANDAS_VERSION: 0.20.3
+    image: amancevice/pandas:0.20.3-python3-alpine

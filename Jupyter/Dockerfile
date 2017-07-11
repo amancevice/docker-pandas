@@ -1,5 +1,5 @@
 FROM python:2.7
-ARG PANDAS_VERSION=0.20.2
+ARG PANDAS_VERSION=0.20.3
 RUN useradd -b /home -U -m jupyter && \
     pip install \
         jupyter==1.0.0 \

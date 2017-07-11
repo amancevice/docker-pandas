@@ -1,5 +1,5 @@
 FROM alpine:3.6
-ARG PANDAS_VERSION=0.20.2
+ARG PANDAS_VERSION=0.20.3
 RUN apk add --no-cache python3-dev && \
     apk add --no-cache --virtual .build-deps g++ && \
     ln -s /usr/include/locale.h /usr/include/xlocale.h && \
