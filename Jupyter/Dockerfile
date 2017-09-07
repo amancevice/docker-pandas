@@ -10,4 +10,4 @@ WORKDIR /home/jupyter/notebooks
 VOLUME /home/jupyter/notebooks
 USER jupyter
 HEALTHCHECK CMD ["curl", "-f", "http://localhost:8888/"]
-CMD jupyter notebook --ip 0.0.0.0 --no-browser
+CMD ["sh", "-c", "jupyter notebook --ip 0.0.0.0 --no-browser"]
