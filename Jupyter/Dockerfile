@@ -6,8 +6,8 @@ RUN useradd -b /home -U -m jupyter && \
         matplotlib==1.5.1 \
         pandas==${PANDAS_VERSION}
 EXPOSE 8888
-WORKDIR /home/jupyter/notebooks
-VOLUME /home/jupyter/notebooks
+WORKDIR /notebooks
+VOLUME /notebooks
 USER jupyter
 HEALTHCHECK CMD ["curl", "-f", "http://localhost:8888/"]
 CMD ["sh", "-c", "jupyter notebook --ip 0.0.0.0 --no-browser"]
