@@ -10,37 +10,33 @@ import compose.cli.command
 PANDAS_VERSION = '0.21.0'
 PROJECT = compose.cli.command.get_project('.')
 REPO = 'amancevice/pandas'
-BASES = [x.name for x in PROJECT.get_services() if x.name != 'latest']
 
 
 @click.command(context_settings={'help_option_names': ['-h', '--help']})
-@click.argument('VERSION',
-                default=[PANDAS_VERSION],
-                is_eager=True)
-@click.option('-b', '--build',
-              callback=lambda x, y, z: set(('latest',) + z),
-              default=['latest'],
-              help="Additional base(s) to build",
-              multiple=True,
-              type=click.Choice(BASES))
-def build(version, build):
+@click.option('-a', '--alpine', help='Build on alpine', is_flag=True)
+@click.option('-j', '--jupyter', help='Build jupyter', is_flag=True)
+@click.option('-s', '--slim', help='Build on debian:slim', is_flag=True)
+@click.argument('VERSION', is_eager=True, nargs=-1)
+def build(alpine, slim, jupyter, version):
     """ Build Docker Images. """
-    version.sort()
+    versions = sorted(version)
+    builds = ['latest']
+    builds += ['alpine'] * alpine + ['jupyter'] * jupyter + ['slim'] * slim
     tags = []
-    for key in build:
+    for build in builds:
         # Get service
-        svc = PROJECT.get_service(key)
+        svc = PROJECT.get_service(build)
 
         # Build Python3 images
-        for vsn in version:
-            tags += build_version(key, svc, vsn)
+        for vsn in versions:
+            tags += build_version(build, svc, vsn)
 
-        if key != 'jupyter':
+        if build != 'jupyter':
             # Build Python2 images
             svc.options['build']['context'] = \
                 svc.options['build']['context'].replace('Python3', 'Python2')
             for vsn in version:
-                tags += build_version(key, svc, vsn, 'python2')
+                tags += build_version(build, svc, vsn, 'python2')
 
     click.echo()
     for tag in sorted(tags):
