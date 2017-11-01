@@ -30,5 +30,5 @@ docker pull amancevice/pandas:x.y.z-python3-alpine
 Use the `build.py` script to build a specific version:
 
 ```bash
-./build.py [latest|slim|alpine|jupyter] -v 0.20.3 -v ...
+./build.py [--build slim|alpine|jupyter] 0.21.0 ...
 ```
