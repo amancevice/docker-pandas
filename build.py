@@ -14,14 +14,17 @@ REPO = 'amancevice/pandas'
 
 @click.command(context_settings={'help_option_names': ['-h', '--help']})
 @click.option('-a', '--alpine', help='Build on alpine', is_flag=True)
+@click.option('-d', '--debian', help='Build on debian', is_flag=True)
 @click.option('-j', '--jupyter', help='Build jupyter', is_flag=True)
 @click.option('-s', '--slim', help='Build on debian:slim', is_flag=True)
 @click.argument('VERSION', is_eager=True, nargs=-1)
-def build(alpine, slim, jupyter, version):
+def build(alpine, debian, jupyter, slim, version):
     """ Build Docker Images. """
     versions = sorted(version)
-    builds = ['latest']
-    builds += ['alpine'] * alpine + ['jupyter'] * jupyter + ['slim'] * slim
+    builds = ['latest'] * debian + \
+             ['alpine'] * alpine + \
+             ['jupyter'] * jupyter + \
+             ['slim'] * slim
     tags = []
     for build in builds:
         # Get service
