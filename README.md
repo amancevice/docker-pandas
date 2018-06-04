@@ -30,5 +30,5 @@ docker pull amancevice/pandas:x.y.z-python3-alpine
 Use the `build.py` script to build a specific version:
 
 ```bash
-./build.py [-d | --debian] [-s | --slim] [-a | --alpine] [-j | --jupyter] 0.22.0 ...
+./build.py [-d | --debian] [-s | --slim] [-a | --alpine] [-j | --jupyter] 0.23.0 ...
 ```
