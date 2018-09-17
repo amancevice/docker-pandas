@@ -1,8 +1,8 @@
-FROM alpine:3.7
-ARG PANDAS_VERSION=0.23.0
-RUN apk add --no-cache python-dev py-pip && \
+FROM alpine:3.8
+ARG PANDAS_VERSION=0.23.4
+RUN apk add --no-cache python-dev py-pip libstdc++ && \
     apk add --no-cache --virtual .build-deps g++ && \
     ln -s /usr/include/locale.h /usr/include/xlocale.h && \
-    pip install numpy==1.14.0 && \
+    pip install numpy==1.15.1 && \
     pip install pandas==${PANDAS_VERSION} && \
     apk del .build-deps
