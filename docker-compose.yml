@@ -1,20 +1,25 @@
 version: '3'
 services:
-  jupyter:
-    build: Jupyter
-    image: amancevice/pandas:jupyter
-    ports:
-      - 8888:8888
-  latest:
-    build: Python3
-    image: amancevice/pandas:latest
   alpine:
     build:
-      context: Python3
-      dockerfile: Dockerfile.alpine
-    image: amancevice/pandas:alpine
-  slim:
+      context: alpine
+      args:
+        PANDAS_VERSION: ${PANDAS_VERSION}
+    image: amancevice/pandas:${PANDAS_VERSION}-alpine
+  debian:
     build:
-      context: Python3
-      dockerfile: Dockerfile.slim
-    image: amancevice/pandas:slim
+      context: .
+      args:
+        PANDAS_VERSION: ${PANDAS_VERSION}
+    image: amancevice/pandas:${PANDAS_VERSION}
+  jupyter:
+    build:
+      context: jupyter
+      args:
+        PANDAS_VERSION: ${PANDAS_VERSION}
+    image: amancevice/pandas:${PANDAS_VERSION}-jupyter
+    ports:
+      - 8888:8888
+  slim:
+    build: slim
+    image: amancevice/pandas:${PANDAS_VERSION}-slim

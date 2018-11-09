@@ -8,6 +8,8 @@ click = "*"
 docker-compose = "*"
 
 [dev-packages]
+ipdb = "*"
+ipython = "*"
 
 [requires]
 python_version = "3.6"
