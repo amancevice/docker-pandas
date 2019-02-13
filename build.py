@@ -8,12 +8,17 @@ import compose.cli.command
 import docker
 
 DOCKER = docker.APIClient()
-LATEST_VERSION = '0.23.4'
+LATEST_VERSION = '0.24.1'
 REPO = 'amancevice/pandas'
 
 
 @click.command(context_settings={'help_option_names': ['-h', '--help']})
-@click.option('-v', '--version', help='Pandas version', multiple=True)
+@click.option(
+    '-v', '--version',
+    default=[LATEST_VERSION],
+    help='Pandas version',
+    multiple=True,
+)
 def build(version):
     """ Build Docker Images. """
     tags = []
