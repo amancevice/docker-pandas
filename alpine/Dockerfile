@@ -1,4 +1,4 @@
-FROM alpine:3.8
+FROM alpine:3.9
 ARG PANDAS_VERSION=0.24.2
 RUN apk add --no-cache python3-dev libstdc++ && \
     apk add --no-cache --virtual .build-deps g++ && \
