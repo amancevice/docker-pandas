@@ -1,4 +1,4 @@
-FROM alpine:3.9
+FROM alpine:3.10
 COPY requirements.txt /tmp/
 RUN apk add --no-cache python3-dev libstdc++ && \
     apk add --no-cache --virtual .build-deps g++ && \
