@@ -1,46 +1,39 @@
-image  := amancevice/pandas
-version = $(shell grep 'pandas' Pipfile | cut -f2 -d'"' | cut -f3 -d=)
+pandas_version := 0.25.0
+stages         := lock alpine slim jupyter latest
+flavors        := alpine slim jupyter
+shells         := $(foreach stage,$(stages),shell@$(stage))
 
-.PHONY: all alpine clean jupyter latest slim
+.PHONY: all clean $(stages) $(shells)
 
-all: \
-	Pipfile.lock \
-	requirements-dev.txt \
-	requirements.txt \
-	.docker/$(version) \
-	.docker/$(version)-alpine \
-	.docker/$(version)-jupyter \
-	.docker/$(version)-slim \
-	.docker/alpine \
-	.docker/jupyter \
-	.docker/latest \
-	.docker/slim
+all: Pipfile Pipfile.lock $(stages)
 
-clean:
-	-docker image rm -f $(shell sed G .docker/*)
-	-rm -rf .docker
-
-.docker: requirements.txt
+.docker:
 	mkdir -p $@
 
-.docker/latest: | .docker
-	docker build --iidfile $@ --tag amancevice/pandas .
+.docker/$(pandas_version)@alpine: .docker/$(pandas_version)@lock
+.docker/$(pandas_version)@slim: .docker/$(pandas_version)@alpine
+.docker/$(pandas_version)@jupyter: .docker/$(pandas_version)@slim
+.docker/$(pandas_version)@latest: .docker/$(pandas_version)@jupyter
+.docker/$(pandas_version)@%: | .docker
+	docker build \
+	--build-arg PANDAS_VERSION=$(pandas_version) \
+	--iidfile $@ \
+	--tag amancevice/pandas:$* \
+	--target $* .
 
-.docker/$(version): | .docker
-	docker build --iidfile $@ --tag amancevice/pandas:$(version) .
+Pipfile Pipfile.lock: .docker/$(pandas_version)@lock
+	docker run --rm $(shell cat $<) cat $@ > $@
 
-.docker/%: | .docker
-	docker build --iidfile $@ --tag amancevice/pandas:$* $(lastword $(subst -, ,$*))
+clean:
+	-docker image rm $(shell awk {print} .docker/*)
+	-rm -rf .docker
 
-Pipfile.lock: Pipfile
-	pipenv lock
+$(stages): %: .docker/$(pandas_version)@%
 
-requirements.txt: Pipfile.lock
-	pipenv lock -r > $@
-	cp $@ alpine/$@
-	cp $@ jupyter/$@
-	cp $@ slim/$@
+alpine slim jupyter: %: .docker/$(pandas_version)@%
+	docker tag amancevice/pandas:$* amancevice/pandas:$(pandas_version)-$*
 
-requirements-dev.txt: Pipfile.lock
-	pipenv lock -r -d > $@
-	cp $@ jupyter/$@
+latest: %: .docker/$(pandas_version)@%
+	docker tag amancevice/pandas:$* amancevice/pandas:$(pandas_version)
+
+$(shells): shell@%: .docker/$(pandas_version)@%
