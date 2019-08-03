@@ -33,15 +33,14 @@ clean:
 	-rm -rf .docker
 
 push: all
-	docker push \
-	$(image):alpine \
-	$(image):slim \
-	$(image):jupyter \
-	$(image):latest \
-	$(image):$(pandas_version)-alpine \
-	$(image):$(pandas_version)-slim \
-	$(image):$(pandas_version)-jupyter \
-	$(image):$(pandas_version)
+	docker push $(image):alpine
+	docker push $(image):slim
+	docker push $(image):jupyter
+	docker push $(image):latest
+	docker push $(image):$(pandas_version)-alpine
+	docker push $(image):$(pandas_version)-slim
+	docker push $(image):$(pandas_version)-jupyter
+	docker push $(image):$(pandas_version)
 
 $(stages): %: .docker/$(pandas_version)@%
 
