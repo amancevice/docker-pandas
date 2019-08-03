@@ -29,7 +29,7 @@ Pipfile Pipfile.lock: .docker/$(pandas_version)@base
 	docker run --rm $(shell cat $<) cat $@ > $@
 
 clean:
-	-docker image rm $(shell awk {print} .docker/*)
+	-docker image rm --force $(shell awk {print} .docker/*)
 	-rm -rf .docker
 
 push: all

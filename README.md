@@ -23,3 +23,11 @@ For alpine-based images append `-alpine` to the tag:
 ```bash
 docker pull amancevice/pandas:x.y.z-alpine
 ```
+
+## Building
+
+Use the `make` command to build a new suite of pandas images:
+
+```bash
+make
+```
