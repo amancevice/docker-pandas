@@ -1,7 +1,7 @@
 ARG ALPINE_VERSION=3.10
 ARG PYTHON_VERSION=3.7
 
-FROM python:alpine AS base
+FROM python:${PYTHON_VERSION}-alpine AS base
 WORKDIR /var/lib/pandas/
 COPY Pipfile* /var/lib/pandas/
 RUN pip install pipenv==2018.11.26 && \
