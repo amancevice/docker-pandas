@@ -14,20 +14,24 @@ COPY --from=base /var/lib/pandas/ .
 RUN apk add --no-cache python3-dev libstdc++ && \
     apk add --no-cache --virtual .build-deps g++ && \
     ln -s /usr/include/locale.h /usr/include/xlocale.h && \
+    pip3 install $(grep numpy requirements.txt) && \
     pip3 install -r requirements.txt && \
     apk del .build-deps
 
 FROM python:${PYTHON_VERSION}-slim AS slim
 WORKDIR /var/lib/pandas/
 COPY --from=base /var/lib/pandas/ .
-RUN pip install -r requirements.txt
+RUN pip install $(grep numpy requirements.txt) && \
+    pip install -r requirements.txt
 
 FROM python:${PYTHON_VERSION} AS jupyter
 WORKDIR /var/lib/pandas/
 COPY --from=base /var/lib/pandas/ .
-RUN pip install -r requirements.txt -r requirements-dev.txt
+RUN pip install $(grep numpy requirements.txt) && \
+    pip install -r requirements.txt -r requirements-dev.txt
 
 FROM python:${PYTHON_VERSION} AS latest
 WORKDIR /var/lib/pandas/
 COPY --from=base /var/lib/pandas/ .
-RUN pip install -r requirements.txt
+RUN pip install $(grep numpy requirements.txt) && \
+    pip install -r requirements.txt
