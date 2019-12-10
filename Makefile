@@ -51,3 +51,4 @@ latest: %: .docker/$(pandas_version)@%
 	docker tag $(image):$* $(image):$(pandas_version)
 
 $(shells): shell@%: .docker/$(pandas_version)@%
+	docker run --rm -it --entrypoint /bin/sh $(shell cat $<)
