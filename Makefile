@@ -1,54 +1,61 @@
-image  := amancevice/pandas
-stages := base alpine slim jupyter latest
-shells := $(foreach stage,$(stages),shell@$(stage))
+IMAGE  := amancevice/pandas
+STAGES    := base alpine slim jupyter latest
+IMAGES    := $(foreach STAGE,$(STAGES),image@$(STAGE))
+SHELLS    := $(foreach STAGE,$(STAGES),shell@$(STAGE))
+TIMESTAMP := $(shell date +%s)
 
-alpine_version := 3.10
-python_version := $(shell grep python_version Pipfile | grep -o '[0-9.]\+')
-pandas_version := $(shell grep pandas Pipfile | grep -o '[0-9.]\+')
+ALPINE_VERSION := 3.10
+PYTHON_VERSION := $(shell grep python_version Pipfile | grep -o '[0-9.]\+')
+PANDAS_VERSION := $(shell grep pandas Pipfile | grep -o '[0-9.]\+')
 
-.PHONY: all clean push $(stages) $(shells)
+.PHONY: all clean clobber push $(IMAGES) $(SHELLS)
 
-all: Pipfile Pipfile.lock $(stages)
+default: Pipfile.lock $(IMAGES)
 
 .docker:
 	mkdir -p $@
 
-.docker/$(pandas_version)@alpine: .docker/$(pandas_version)@base
-.docker/$(pandas_version)@slim: .docker/$(pandas_version)@alpine
-.docker/$(pandas_version)@jupyter: .docker/$(pandas_version)@slim
-.docker/$(pandas_version)@latest: .docker/$(pandas_version)@jupyter
-.docker/$(pandas_version)@%: | .docker
+.docker/$(PANDAS_VERSION)-alpine:  .docker/$(PANDAS_VERSION)-base
+.docker/$(PANDAS_VERSION)-slim:    .docker/$(PANDAS_VERSION)-alpine
+.docker/$(PANDAS_VERSION)-jupyter: .docker/$(PANDAS_VERSION)-slim
+.docker/$(PANDAS_VERSION)-latest:  .docker/$(PANDAS_VERSION)-jupyter
+.docker/$(PANDAS_VERSION)-%:     | .docker
 	docker build \
-	--build-arg ALPINE_VERSION=$(alpine_version) \
-	--build-arg PYTHON_VERSION=$(python_version) \
-	--iidfile $@ \
-	--tag $(image):$* \
-	--target $* .
+	--build-arg ALPINE_VERSION=$(ALPINE_VERSION) \
+	--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
+	--iidfile $@@$(TIMESTAMP) \
+	--tag $(IMAGE):$* \
+	--target $* \
+	.
+	cp $@@$(TIMESTAMP) $@
 
-Pipfile Pipfile.lock: .docker/$(pandas_version)@base
+Pipfile.lock: .docker/$(PANDAS_VERSION)-base
 	docker run --rm $(shell cat $<) cat $@ > $@
 
 clean:
-	-docker image rm --force $(shell awk {print} .docker/*)
+	-find .docker -name '$(PANDAS_VERSION)-*' -not -name '*@*' | xargs rm
+
+clobber:
+	-awk {print} .docker/* 2> /dev/null | uniq | xargs docker image rm --force
 	-rm -rf .docker
 
-push: all
-	docker push $(image):alpine
-	docker push $(image):slim
-	docker push $(image):jupyter
-	docker push $(image):latest
-	docker push $(image):$(pandas_version)-alpine
-	docker push $(image):$(pandas_version)-slim
-	docker push $(image):$(pandas_version)-jupyter
-	docker push $(image):$(pandas_version)
+push: default
+	docker push $(IMAGE):alpine
+	docker push $(IMAGE):slim
+	docker push $(IMAGE):jupyter
+	docker push $(IMAGE):latest
+	docker push $(IMAGE):$(PANDAS_VERSION)-alpine
+	docker push $(IMAGE):$(PANDAS_VERSION)-slim
+	docker push $(IMAGE):$(PANDAS_VERSION)-jupyter
+	docker push $(IMAGE):$(PANDAS_VERSION)
 
-$(stages): %: .docker/$(pandas_version)@%
+alpine slim jupyter: %: .docker/$(PANDAS_VERSION)-%
+	docker tag $(IMAGE):$* $(IMAGE):$(PANDAS_VERSION)-$*
 
-alpine slim jupyter: %: .docker/$(pandas_version)@%
-	docker tag $(image):$* $(image):$(pandas_version)-$*
+latest: %: .docker/$(PANDAS_VERSION)-%
+	docker tag $(IMAGE):$* $(IMAGE):$(PANDAS_VERSION)
 
-latest: %: .docker/$(pandas_version)@%
-	docker tag $(image):$* $(image):$(pandas_version)
+$(IMAGES): image@%: .docker/$(PANDAS_VERSION)-%
 
-$(shells): shell@%: .docker/$(pandas_version)@%
+$(SHELLS): shell@%: .docker/$(PANDAS_VERSION)-%
 	docker run --rm -it --entrypoint /bin/sh $(shell cat $<)
