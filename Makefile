@@ -10,7 +10,7 @@ PANDAS_VERSION := $(shell grep pandas Pipfile | grep -o '[0-9.]\+')
 
 .PHONY: all clean clobber push $(IMAGES) $(SHELLS)
 
-default: Pipfile.lock $(IMAGES)
+default: Pipfile.lock alpine slim jupyter latest
 
 .docker:
 	mkdir -p $@
