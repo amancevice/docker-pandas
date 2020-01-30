@@ -1,10 +1,10 @@
-IMAGE  := amancevice/pandas
+IMAGE     := amancevice/pandas
 STAGES    := base alpine slim jupyter latest
 IMAGES    := $(foreach STAGE,$(STAGES),image@$(STAGE))
 SHELLS    := $(foreach STAGE,$(STAGES),shell@$(STAGE))
 TIMESTAMP := $(shell date +%s)
 
-ALPINE_VERSION := 3.10
+ALPINE_VERSION := 3.11
 PYTHON_VERSION := $(shell grep python_version Pipfile | grep -o '[0-9.]\+')
 PANDAS_VERSION := $(shell grep pandas Pipfile | grep -o '[0-9.]\+')
 
