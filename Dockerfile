@@ -1,12 +1,12 @@
-ARG ALPINE_VERSION=3.10
+ARG ALPINE_VERSION=3.11
 ARG PYTHON_VERSION=3.7
 
-FROM python:${PYTHON_VERSION}-alpine AS base
+FROM python:${PYTHON_VERSION} AS base
 WORKDIR /var/lib/pandas/
+RUN pip install pipenv==2018.11.26
 COPY Pipfile* /var/lib/pandas/
-RUN pip install pipenv==2018.11.26 && \
-    pipenv lock -r > requirements.txt && \
-    pipenv lock -r -d > requirements-dev.txt
+RUN pipenv lock --requirements > requirements.txt
+RUN pipenv lock --requirements --dev > requirements-dev.txt
 
 FROM alpine:${ALPINE_VERSION} as alpine
 WORKDIR /var/lib/pandas/

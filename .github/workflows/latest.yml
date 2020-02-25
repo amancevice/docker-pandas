@@ -21,4 +21,4 @@ jobs:
     needs: lint
     steps:
     - uses: actions/checkout@v1
-    - run: make latest clobber
+    - run: make
