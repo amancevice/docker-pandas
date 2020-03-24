@@ -1,9 +1,9 @@
 name: push
 
 on:
-  release:
-    types:
-    - published
+  push:
+    tags:
+      - '*'
 
 jobs:
 
@@ -19,9 +19,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint
     steps:
-    - uses: actions/checkout@v1
-    - uses: azure/docker-login@v1
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    - run: make push
+      - uses: actions/checkout@v1
+      - uses: azure/docker-login@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - run: make push
