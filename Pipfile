@@ -8,7 +8,7 @@ jupyter = "*"
 matplotlib = "*"
 
 [packages]
-pandas = "==1.0.3"
+pandas = "==1.0.5"
 
 [requires]
 python_version = "3.7"

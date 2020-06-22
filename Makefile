@@ -1,25 +1,21 @@
-REPO          := amancevice/pandas
+REPO           := amancevice/pandas
 STAGES         := lock alpine slim jupyter latest
 PANDAS_VERSION := $(shell grep pandas Pipfile | grep -o '[0-9.]\+')
 
 .PHONY: default clean clobber push
 
-default: Pipfile.lock $(STAGES)
+default: $(STAGES)
 
 .docker:
 	mkdir -p $@
 
 .docker/lock:    Pipfile
-.docker/alpine:  .docker/lock
+.docker/alpine:  .docker/lock Pipfile.lock
 .docker/slim:    .docker/alpine
 .docker/jupyter: .docker/slim
 .docker/latest:  .docker/jupyter
 .docker/%:     | .docker
-	docker build \
-	--iidfile $@ \
-	--tag $(REPO):$* \
-	--target $* \
-	.
+	docker build --iidfile $@ --tag $(REPO):$* --target $* .
 
 Pipfile.lock: .docker/lock
 	docker run --rm --entrypoint cat $$(cat $<) $@ > $@
