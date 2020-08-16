@@ -5,6 +5,8 @@ verify_ssl = true
 
 [dev-packages]
 jupyter = "*"
+jupyterlab = "*"
+jupyter-book = "*"
 matplotlib = "*"
 
 [packages]
