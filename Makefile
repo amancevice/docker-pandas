@@ -10,10 +10,10 @@ default: $(STAGES)
 	mkdir -p $@
 
 .docker/lock:    Pipfile
-.docker/alpine:  .docker/lock Pipfile.lock
-.docker/slim:    .docker/alpine
-.docker/jupyter: .docker/slim
-.docker/latest:  .docker/jupyter
+.docker/latest:  .docker/jupyter Pipfile.lock
+.docker/jupyter: .docker/latest
+.docker/slim:    .docker/jupyter
+.docker/alpine:  .docker/slim
 .docker/%:     | .docker
 	docker build --iidfile $@ --tag $(REPO):$* --target $* .
 
