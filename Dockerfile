@@ -30,7 +30,8 @@ RUN pip install $(grep -Eoh 'numpy==[0-9.]+' requirements.txt) && \
 FROM python:${PYTHON_VERSION}-alpine as alpine
 WORKDIR /var/lib/pandas/
 COPY --from=lock /var/lib/pandas/ .
-RUN apk add --no-cache --virtual .build-deps g++ && \
+RUN apk add --no-cache libstdc++  && \
+    apk add --no-cache --virtual .build-deps g++ && \
     ln -s /usr/include/locale.h /usr/include/xlocale.h && \
     pip install $(grep -Eoh 'numpy==[0-9.]+' requirements.txt) && \
     pip install -r requirements.txt && \
