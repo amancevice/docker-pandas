@@ -3,7 +3,7 @@ ARG PYTHON_VERSION=3.9
 
 FROM python:${PYTHON_VERSION} AS lock
 WORKDIR /var/lib/pandas/
-RUN pip install pipenv==2020.8.13
+RUN pip install pipenv==2020.11.4
 RUN pipenv install 2>&1
 COPY Pipfile* /var/lib/pandas/
 RUN pipenv lock --requirements > requirements.txt
