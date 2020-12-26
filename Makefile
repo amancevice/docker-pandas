@@ -2,9 +2,9 @@ REPO           := amancevice/pandas
 STAGES         := lock alpine slim jupyter latest
 PANDAS_VERSION := $(shell grep pandas Pipfile | grep -o '[0-9.]\+')
 
-.PHONY: default clean clobber push
+.PHONY: all clean clobber push
 
-default: $(STAGES)
+all: $(STAGES)
 
 .docker:
 	mkdir -p $@
@@ -26,15 +26,8 @@ clean:
 clobber: clean
 	docker image ls $(REPO) --quiet | uniq | xargs docker image rm --force
 
-push: default
-	docker image push $(REPO):alpine
-	docker image push $(REPO):slim
-	docker image push $(REPO):jupyter
-	docker image push $(REPO):latest
-	docker image push $(REPO):$(PANDAS_VERSION)-alpine
-	docker image push $(REPO):$(PANDAS_VERSION)-slim
-	docker image push $(REPO):$(PANDAS_VERSION)-jupyter
-	docker image push $(REPO):$(PANDAS_VERSION)
+push: all
+	docker image push --all-tags $(REPO)
 
 alpine slim jupyter:
 	docker image tag $(REPO):$* $(REPO):$(PANDAS_VERSION)-$*
