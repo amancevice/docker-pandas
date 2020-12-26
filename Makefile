@@ -27,7 +27,14 @@ clobber: clean
 	docker image ls $(REPO) --quiet | uniq | xargs docker image rm --force
 
 push: all
-	docker image push --all-tags $(REPO)
+	docker image push $(REPO):alpine
+	docker image push $(REPO):slim
+	docker image push $(REPO):jupyter
+	docker image push $(REPO):latest
+	docker image push $(REPO):$(PANDAS_VERSION)-alpine
+	docker image push $(REPO):$(PANDAS_VERSION)-slim
+	docker image push $(REPO):$(PANDAS_VERSION)-jupyter
+	docker image push $(REPO):$(PANDAS_VERSION)
 
 alpine slim jupyter:
 	docker image tag $(REPO):$* $(REPO):$(PANDAS_VERSION)-$*
