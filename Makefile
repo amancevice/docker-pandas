@@ -1,32 +1,18 @@
 REPO           := amancevice/pandas
-STAGES         := lock alpine slim jupyter latest
+STAGES         := lock latest jupyter slim alpine
 PANDAS_VERSION := $(shell grep pandas Pipfile | grep -o '[0-9.]\+')
 
-.PHONY: all clean clobber push
+all: Pipfile.lock
 
-all: $(STAGES)
-
-.docker:
-	mkdir -p $@
-
-.docker/lock:    Pipfile
-.docker/latest:  .docker/jupyter Pipfile.lock
-.docker/jupyter: .docker/latest
-.docker/slim:    .docker/jupyter
-.docker/alpine:  .docker/slim
-.docker/%:     | .docker
-	docker build --iidfile $@ --tag $(REPO):$* --target $* .
-
-Pipfile.lock: .docker/lock
-	docker run --rm --entrypoint cat $$(cat $<) $@ > $@
+build: $(STAGES)
 
 clean:
 	rm -rf .docker
 
 clobber: clean
-	docker image ls $(REPO) --quiet | uniq | xargs docker image rm --force
+	docker image ls --quiet $(REPO) | uniq | xargs docker image rm --force
 
-push: all
+push: build
 	docker image push $(REPO):alpine
 	docker image push $(REPO):slim
 	docker image push $(REPO):jupyter
@@ -45,3 +31,19 @@ latest:
 lock: Pipfile.lock
 
 $(STAGES): %: .docker/%
+
+.PHONY: all build clean clobber push $(STAGES)
+
+Pipfile.lock: Pipfile | .docker/lock
+	docker run --rm --entrypoint cat $(REPO):lock $@ > $@
+
+.docker/lock: Pipfile
+.docker/latest: .docker/lock Pipfile.lock
+.docker/jupyter: .docker/latest
+.docker/slim: .docker/jupyter
+.docker/alpine: .docker/slim
+.docker/%: | .docker
+	docker build --iidfile $@ --tag $(REPO):$* --target $* .
+
+.docker:
+	mkdir -p $@
