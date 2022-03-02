@@ -1,0 +1,157 @@
+# https://taskfile.dev
+---
+version: "3"
+
+vars:
+  REPO: amancevice/pandas
+  PANDAS_VERSION: { sh: "grep pandas Pipfile | sed 's/[^0-9.]//g'" }
+  PIPENV_VERSION: "2021.5.29"
+  PYTHON_VERSION: "3.9"
+
+tasks:
+  default:
+    cmds:
+      - task: init
+
+  init:
+    desc: Initialize repo
+    cmds:
+      - task: init:brew
+
+  init:brew:
+    status:
+      - brew bundle check
+    cmds:
+      - brew bundle
+
+  build:
+    desc: Build images
+    deps:
+      - task: build:alpine
+      - task: build:jupyter
+      - task: build:latest
+      - task: build:slim
+
+  build:alpine:
+    deps:
+      - task: lock
+    cmds:
+      - task: docker:build
+        vars:
+          TARGET: alpine
+          TAG: "{{.PANDAS_VERSION}}-alpine"
+
+  build:jupyter:
+    deps:
+      - task: lock
+    cmds:
+      - task: docker:build
+        vars:
+          TARGET: jupyter
+          TAG: "{{.PANDAS_VERSION}}-jupyter"
+
+  build:latest:
+    deps:
+      - task: lock
+    cmds:
+      - task: docker:build
+        vars:
+          TARGET: latest
+          TAG: "{{.PANDAS_VERSION}}"
+
+  build:slim:
+    deps:
+      - task: lock
+    cmds:
+      - task: docker:build
+        vars:
+          TARGET: slim
+          TAG: "{{.PANDAS_VERSION}}-slim"
+
+  clean:
+    desc: Clean up files
+    cmds:
+      - rm -rf .task requirements*.txt
+      - docker image ls --quiet amancevice/pandas | uniq | xargs docker image rm --force
+
+  docker:build:
+    vars:
+      TARGET: >-
+        {{default "latest" .TARGET}}
+      TAG: >-
+        {{default "latest" .TAG}}
+    cmds:
+      - >-
+        docker build
+        --tag {{.REPO}}:{{.TAG}}
+        --tag {{.REPO}}:{{.TARGET}}
+        --target {{.TARGET}}
+        .
+
+  docker:push:
+    vars:
+      TARGET: >-
+        {{default "latest" .TARGET}}
+      TAG: >-
+        {{default "latest" .TAG}}
+    cmds:
+      - docker push {{.REPO}}:{{.TARGET}}
+      - docker push {{.REPO}}:{{.TAG}}
+
+  lock:
+    desc: Lock dependencies
+    run: once
+    sources:
+      - Dockerfile
+      - Pipfile
+    generates:
+      - Pipfile.lock
+      - requirements-dev.txt
+      - requirements.txt
+    cmds:
+      - docker build --tag {{.REPO}}:lock --target lock .
+      - docker run --rm {{.REPO}}:lock | tar -x
+
+  push:
+    desc: Push images
+    deps:
+      - task: push:alpine
+      - task: push:jupyter
+      - task: push:latest
+      - task: push:slim
+
+  push:alpine:
+    deps:
+      - task: build:alpine
+    cmds:
+      - task: docker:push
+        vars:
+          TARGET: alpine
+          TAG: "{{.PANDAS_VERSION}}-alpine"
+
+  push:jupyter:
+    deps:
+      - task: build:jupyter
+    cmds:
+      - task: docker:push
+        vars:
+          TARGET: jupyter
+          TAG: "{{.PANDAS_VERSION}}-jupyter"
+
+  push:latest:
+    deps:
+      - task: build:latest
+    cmds:
+      - task: docker:push
+        vars:
+          TARGET: latest
+          TAG: "{{.PANDAS_VERSION}}"
+
+  push:slim:
+    deps:
+      - task: build:slim
+    cmds:
+      - task: docker:push
+        vars:
+          TARGET: slim
+          TAG: "{{.PANDAS_VERSION}}-slim"

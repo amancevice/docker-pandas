@@ -29,8 +29,8 @@ docker pull amancevice/pandas:x.y.z-alpine
 
 ## Building
 
-Use the `make` command to build a new suite of pandas images:
+Use [Go-Task](https://taskfile.dev/) to build/push images:
 
 ```bash
-make
+task
 ```

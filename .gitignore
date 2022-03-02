@@ -1,2 +1,4 @@
 **/.docker/
+**/.task/
 Brewfile.lock.json
+requirements*.txt
