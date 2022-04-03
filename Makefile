@@ -14,10 +14,13 @@ latest:
 
 lock: Pipfile.lock
 
+ls:
+	docker image ls $(REPO)
+
 push:
 	 docker push --all-tags $(REPO)
 
-.PHONY: all clean push alpine slim jupyter latest lock push
+.PHONY: all clean push alpine slim jupyter latest lock ls push
 
 Pipfile.lock: Pipfile
 	docker build --tag $(REPO):lock --target lock .
