@@ -2,9 +2,9 @@ ARG PYTHON_VERSION=3.11
 
 FROM python:$PYTHON_VERSION AS lock
 WORKDIR /var/lib/pandas/
-RUN pip install pipenv==2022.9.8
+RUN pip install pipenv==2022.9.24
 RUN pipenv --python $PYTHON_VERSION
-COPY Pipfile* /var/lib/pandas/
+COPY Pipfile* ./
 RUN pipenv lock
 RUN pipenv requirements > requirements.txt
 RUN pipenv requirements --dev-only > requirements-dev.txt
