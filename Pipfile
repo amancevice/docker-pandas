@@ -9,4 +9,4 @@ jupyterlab = "*"
 matplotlib = "*"
 
 [packages]
-pandas = "==2.0.2"
+pandas = "==2.1.0"
