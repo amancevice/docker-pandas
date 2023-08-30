@@ -4,28 +4,44 @@ on:
     tags:
       - "*"
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-      - run: npm install -g dockerlint
-      - run: dockerlint
   build-push:
     runs-on: ubuntu-latest
-    needs: lint
     strategy:
       matrix:
-        target:
-          - alpine
-          - jupyter
-          - latest
-          - slim
+        file:
+          - Dockerfile
+          - Dockerfile.jupyter
+          - Dockerfile.slim
+        platform:
+          - linux/amd64
+          - linux/arm64
     steps:
       - uses: actions/checkout@v3
       - uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - run: make ${{ matrix.target }}
+      - uses: ./.github/actions/lint
+        with:
+          file: ${{ matrix.file }}
+      - uses: ./.github/actions/build
+        with:
+          file: ${{ matrix.file }}
+          platform: ${{ matrix.platform }}
+      - run: make push
+  alpine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: ./.github/actions/lint
+        with:
+          file: Dockerfile.alpine
+      - uses: ./.github/actions/build
+        with:
+          file: Dockerfile.alpine
+          platform: linux/amd64
       - run: make push
