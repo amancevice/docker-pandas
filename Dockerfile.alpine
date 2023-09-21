@@ -1,0 +1,9 @@
+ARG PYTHON_VERSION=3.11
+FROM python:$PYTHON_VERSION-alpine
+WORKDIR /var/lib/pandas/
+COPY . .
+RUN apk add --no-cache libstdc++ && \
+    apk add --no-cache --virtual .build-deps g++ && \
+    ln -s /usr/include/locale.h /usr/include/xlocale.h && \
+    pip install -r requirements.txt && \
+    apk del .build-deps

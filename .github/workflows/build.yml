@@ -3,26 +3,25 @@ on:
   pull_request:
   push:
     paths:
-      - Dockerfile
+      - Dockerfile*
       - Pipfile.lock
 jobs:
-  lint:
+  build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        file:
+          - Dockerfile
+          - Dockerfile.alpine
+          - Dockerfile.jupyter
+          - Dockerfile.slim
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
       - run: npm install -g dockerlint
-      - run: dockerlint
-  build:
-    runs-on: ubuntu-latest
-    needs: lint
-    strategy:
-      matrix:
-        target:
-          - alpine
-          - jupyter
-          - latest
-          - slim
-    steps:
-      - uses: actions/checkout@v3
-      - run: make ${{ matrix.target }}
+      - run: dockerlint -f ${{ matrix.file }}
+      - run: pip install pipenv
+      - run: make ${{ matrix.file }}

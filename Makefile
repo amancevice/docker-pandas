@@ -1,27 +1,39 @@
 REPO           := amancevice/pandas
-PANDAS_VERSION := $(shell grep pandas Pipfile | grep -o '[0-9.]\+')
+PANDAS_VERSION := $(shell grep pandas Pipfile | grep -Eo '[0-9.]+')
+PIPENV_VERSION := $(shell pipenv --version | grep -Eo '[0-9.]+')
+PYTHON_VERSION := $(shell python --version | grep -Eo '[0-9.]+')
 
 all: Pipfile.lock
 
 clean:
-	docker image ls --quiet $(REPO) | uniq | xargs docker image rm --force
-
-alpine slim jupyter: lock
-	docker build --tag $(REPO):$@ --tag $(REPO):$(PANDAS_VERSION)-$@ --target $@ .
-
-latest:
-	docker build --tag $(REPO):$@ --tag $(REPO):$(PANDAS_VERSION) --target $@ .
-
-lock: Pipfile.lock
-
-ls:
-	docker image ls $(REPO)
+	docker image rm --force $(shell docker image ls --quiet $(REPO) | uniq | xargs)
 
 push:
-	 docker push --all-tags $(REPO)
+	docker push --all-tags $(REPO)
 
-.PHONY: all clean push alpine slim jupyter latest lock ls push
+Dockerfile: requirements.txt
+	docker build --build-arg PYTHON_VERSION=$(PYTHON_VERSION) --tag $(REPO) --tag $(REPO):$(PANDAS_VERSION) .
 
-Pipfile.lock: Pipfile
-	docker build --tag $(REPO):lock --target lock .
-	docker run --rm --entrypoint cat $(REPO):lock $@ > $@
+Dockerfile.%: requirements.txt requirements-dev.txt
+	docker build --build-arg PYTHON_VERSION=$(PYTHON_VERSION) --file $@ --tag $(REPO):$* --tag $(REPO):$(PANDAS_VERSION)-$* .
+
+.PHONY: all clean push Dockerfile Dockerfile.%
+
+requirements.txt:
+	pipenv requirements > requirements.txt
+
+requirements-dev.txt:
+	pipenv requirements --dev > requirements-dev.txt
+
+Pipfile.lock: .venv
+	docker container run --detach --rm --name pandas python:3.11.5 python -m http.server
+	docker container exec --tty pandas pip install pipenv==$(PIPENV_VERSION) &> /dev/null
+	docker container cp Pipfile* pandas:/tmp/
+	docker container exec --tty --workdir /tmp/ pandas pipenv lock
+	docker container cp pandas:/tmp/Pipfile.lock .
+	docker container stop pandas
+
+.venv: Pipfile
+	mkdir -p $@
+	pipenv --python $(PYTHON_VERSION)
+	touch $@
