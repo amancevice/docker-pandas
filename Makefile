@@ -1,4 +1,5 @@
 REPO           := amancevice/pandas
+PLATFORM       := linux/amd64
 PANDAS_VERSION := $(shell grep pandas Pipfile | grep -Eo '[0-9.]+')
 PIPENV_VERSION := $(shell pipenv --version | grep -Eo '[0-9.]+')
 PYTHON_VERSION := $(shell python --version | grep -Eo '[0-9.]+')
@@ -12,10 +13,10 @@ push:
 	docker push --all-tags $(REPO)
 
 Dockerfile: requirements.txt
-	docker build --build-arg PYTHON_VERSION=$(PYTHON_VERSION) --tag $(REPO) --tag $(REPO):$(PANDAS_VERSION) .
+	docker buildx build --load --build-arg PYTHON_VERSION=$(PYTHON_VERSION) --platform $(PLATFORM) --tag $(REPO) --tag $(REPO):$(PANDAS_VERSION) .
 
 Dockerfile.%: requirements.txt requirements-dev.txt
-	docker build --build-arg PYTHON_VERSION=$(PYTHON_VERSION) --file $@ --tag $(REPO):$* --tag $(REPO):$(PANDAS_VERSION)-$* .
+	docker buildx build --load --build-arg PYTHON_VERSION=$(PYTHON_VERSION) --file $@ --platform $(PLATFORM) --tag $(REPO):$* --tag $(REPO):$(PANDAS_VERSION)-$* .
 
 .PHONY: all clean push Dockerfile Dockerfile.%
 

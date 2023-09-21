@@ -12,16 +12,28 @@ jobs:
       matrix:
         file:
           - Dockerfile
-          - Dockerfile.alpine
           - Dockerfile.jupyter
           - Dockerfile.slim
+        platform:
+          - linux/amd64
+          - linux/arm64
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-      - uses: actions/setup-python@v4
+      - uses: ./.github/actions/lint
         with:
-          python-version: "3.11"
-      - run: npm install -g dockerlint
-      - run: dockerlint -f ${{ matrix.file }}
-      - run: pip install pipenv
-      - run: make ${{ matrix.file }}
+          file: ${{ matrix.file }}
+      - uses: ./.github/actions/build
+        with:
+          file: ${{ matrix.file }}
+          platform: ${{ matrix.platform }}
+  alpine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/lint
+        with:
+          file: Dockerfile.alpine
+      - uses: ./.github/actions/build
+        with:
+          file: Dockerfile.alpine
+          platform: linux/amd64
