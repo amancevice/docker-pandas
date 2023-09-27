@@ -10,38 +10,22 @@ jobs:
       matrix:
         file:
           - Dockerfile
+          - Dockerfile.alpine
           - Dockerfile.jupyter
           - Dockerfile.slim
-        platform:
-          - linux/amd64
-          - linux/arm64
     steps:
       - uses: actions/checkout@v3
       - uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - uses: ./.github/actions/lint
+      - name: lint ${{ matrix.file }}
+        uses: ./.github/actions/lint
         with:
           file: ${{ matrix.file }}
-      - uses: ./.github/actions/build
+      - name: build ${{ matrix.file }}
+        uses: ./.github/actions/build
         with:
           file: ${{ matrix.file }}
           platform: ${{ matrix.platform }}
-      - run: make push
-  alpine:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - uses: ./.github/actions/lint
-        with:
-          file: Dockerfile.alpine
-      - uses: ./.github/actions/build
-        with:
-          file: Dockerfile.alpine
-          platform: linux/amd64
       - run: make push

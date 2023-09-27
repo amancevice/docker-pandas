@@ -3,6 +3,7 @@ on:
   pull_request:
   push:
     paths:
+      - .github/**/*.yml
       - Dockerfile*
       - Pipfile.lock
 jobs:
@@ -12,28 +13,16 @@ jobs:
       matrix:
         file:
           - Dockerfile
+          - Dockerfile.alpine
           - Dockerfile.jupyter
           - Dockerfile.slim
-        platform:
-          - linux/amd64
-          - linux/arm64
     steps:
       - uses: actions/checkout@v3
-      - uses: ./.github/actions/lint
+      - name: lint ${{ matrix.file }}
+        uses: ./.github/actions/lint
         with:
           file: ${{ matrix.file }}
-      - uses: ./.github/actions/build
+      - name: build ${{ matrix.file }}
+        uses: ./.github/actions/build
         with:
           file: ${{ matrix.file }}
-          platform: ${{ matrix.platform }}
-  alpine:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/lint
-        with:
-          file: Dockerfile.alpine
-      - uses: ./.github/actions/build
-        with:
-          file: Dockerfile.alpine
-          platform: linux/amd64
