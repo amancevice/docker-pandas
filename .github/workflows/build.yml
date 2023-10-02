@@ -13,7 +13,7 @@ jobs:
       matrix:
         file:
           - Dockerfile
-          - Dockerfile.alpine
+          # - Dockerfile.alpine
           - Dockerfile.jupyter
           - Dockerfile.slim
     steps:
