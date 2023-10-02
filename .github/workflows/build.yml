@@ -7,7 +7,7 @@ on:
       - Dockerfile*
       - Pipfile.lock
 jobs:
-  build:
+  build-multiarch:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -26,3 +26,20 @@ jobs:
         uses: ./.github/actions/build
         with:
           file: ${{ matrix.file }}
+  build-amd64:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        file:
+          - Dockerfile.alpine
+    steps:
+      - uses: actions/checkout@v3
+      - name: lint ${{ matrix.file }}
+        uses: ./.github/actions/lint
+        with:
+          file: ${{ matrix.file }}
+      - name: build ${{ matrix.file }}
+        uses: ./.github/actions/build
+        with:
+          file: ${{ matrix.file }}
+          platforms: linux/amd64

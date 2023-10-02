@@ -4,13 +4,12 @@ on:
     tags:
       - "*"
 jobs:
-  build-push:
+  build-push-multiarch:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         file:
           - Dockerfile
-          - Dockerfile.alpine
           - Dockerfile.jupyter
           - Dockerfile.slim
     steps:
@@ -27,5 +26,26 @@ jobs:
         uses: ./.github/actions/build
         with:
           file: ${{ matrix.file }}
-          platform: ${{ matrix.platform }}
-      - run: make push
+          push: true
+  build-push-amd64:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        file:
+          - Dockerfile.alpine
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: lint ${{ matrix.file }}
+        uses: ./.github/actions/lint
+        with:
+          file: ${{ matrix.file }}
+      - name: build ${{ matrix.file }}
+        uses: ./.github/actions/build
+        with:
+          file: ${{ matrix.file }}
+          platforms: linux/amd64
+          push: true
