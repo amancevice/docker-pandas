@@ -27,12 +27,7 @@ requirements-dev.txt:
 	pipenv requirements --dev > requirements-dev.txt
 
 Pipfile.lock: .venv
-	docker container run --detach --rm --name pandas python:3.11.5 python -m http.server
-	docker container exec --tty pandas pip install pipenv==$(PIPENV_VERSION) &> /dev/null
-	docker container cp Pipfile* pandas:/tmp/
-	docker container exec --tty --workdir /tmp/ pandas pipenv lock
-	docker container cp pandas:/tmp/Pipfile.lock .
-	docker container stop pandas
+	pipenv lock
 
 .venv: Pipfile
 	mkdir -p $@
