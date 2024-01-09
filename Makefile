@@ -1,10 +1,9 @@
 REPO           := amancevice/pandas
 PLATFORM       := linux/amd64
 PANDAS_VERSION := $(shell grep pandas Pipfile | grep -Eo '[0-9.]+')
-PIPENV_VERSION := $(shell pipenv --version | grep -Eo '[0-9.]+')
-PYTHON_VERSION := $(shell python --version | grep -Eo '[0-9.]+')
+PYTHON_VERSION := $(shell pyenv local)
 
-all: Pipfile.lock
+all: requirements.txt requirements-dev.txt
 
 clean:
 	docker image rm --force $(shell docker image ls --quiet $(REPO) | uniq | xargs)
@@ -20,14 +19,15 @@ Dockerfile.%: requirements.txt requirements-dev.txt
 
 .PHONY: all clean push Dockerfile Dockerfile.%
 
-requirements.txt:
+requirements.txt: Pipfile.lock
 	pipenv requirements > requirements.txt
 
-requirements-dev.txt:
+requirements-dev.txt: Pipfile.lock
 	pipenv requirements --dev > requirements-dev.txt
 
-Pipfile.lock: .venv
-	pipenv lock
+Pipfile.lock: Pipfile | .venv
+	pipenv install --dev
+	touch $@
 
 .venv: Pipfile
 	mkdir -p $@
