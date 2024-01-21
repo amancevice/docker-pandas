@@ -26,8 +26,7 @@ requirements-dev.txt: Pipfile.lock
 	pipenv requirements --dev > requirements-dev.txt
 
 Pipfile.lock: Pipfile | .venv
-	pipenv install --dev
-	touch $@
+	pipenv lock
 
 .venv: Pipfile
 	mkdir -p $@
