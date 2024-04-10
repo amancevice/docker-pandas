@@ -6,7 +6,8 @@ PYTHON_VERSION := $(shell pyenv local)
 all: requirements.txt requirements-dev.txt
 
 clean:
-	docker image rm --force $(shell docker image ls --quiet $(REPO) | uniq | xargs)
+	-pipenv --rm
+	-docker image rm --force $(shell docker image ls --quiet $(REPO) | uniq | xargs)
 
 push:
 	docker push --all-tags $(REPO)
