@@ -13,8 +13,8 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: docker/setup-qemu-action@v2
-    - uses: docker/setup-buildx-action@v2
+    - uses: docker/setup-qemu-action@v3
+    - uses: docker/setup-buildx-action@v3
     - name: meta
       id: meta
       shell: bash
@@ -31,7 +31,7 @@ runs:
             ;;
         esac
         echo "tags=$tags" >> $GITHUB_OUTPUT
-    - uses: docker/build-push-action@v5
+    - uses: docker/build-push-action@v6
       with:
         file: ${{ inputs.file }}
         platforms: ${{ inputs.platforms }}
